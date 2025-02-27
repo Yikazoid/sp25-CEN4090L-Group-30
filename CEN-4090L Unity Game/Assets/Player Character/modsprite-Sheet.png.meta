@@ -260,7 +260,12 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      modsprite-Sheet_0: -3436860750253800868
+      modsprite-Sheet_1: -6082880902772891772
+      modsprite-Sheet_2: 4005523071859573231
+      modsprite-Sheet_3: -321294079966819469
+      modsprite-Sheet_4: 8101644601490292151
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
