@@ -572,6 +572,7 @@ GameObject:
   - component: {fileID: 672060131}
   - component: {fileID: 672060133}
   - component: {fileID: 672060134}
+  - component: {fileID: 672060135}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -632,7 +633,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 672060127}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cd4b088c187dd5c4090f334e10c3688c, type: 3}
   m_Name: 
@@ -741,6 +742,30 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   rope: {fileID: 206021176}
+--- !u!114 &672060135
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 672060127}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 193cc0b84115dd345919a2e378e3cabc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpeed: 5
+  acceleration: 10
+  jumpForce: 10
+  airDeceleration: 5
+  jumpEndEarlyGravityModifier: 3
+  coyoteTime: 0.15
+  jumpBuffer: 0.2
+  frictionFactor: 0.9
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  groundCheck: {fileID: 606155275}
 --- !u!1 &818153706
 GameObject:
   m_ObjectHideFlags: 0
