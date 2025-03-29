@@ -1,9 +1,14 @@
+using System.Collections;
+using UnityEditor;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class PlayerController : MonoBehaviour
 {
     [Header("Movement Settings")]
-    public float moveSpeed = 5f;
+    public float walkSpeed = 3f;
+    public float sprintSpeed = 5f;
     public float acceleration = 10f;
     public float jumpForce = 10f;
     public float airDeceleration = 5f;
@@ -22,28 +27,115 @@ public class PlayerController : MonoBehaviour
 
     private Rigidbody2D rb;
     private float time;
+    private float moveSpeed = 3f;
     private bool jumpToConsume;
     private float timeJumpWasPressed;
     private bool grounded;
+    private bool isSprint;
     private float frameLeftGrounded = float.MinValue;
     private bool endedJumpEarly;
     private float inputX;
+    private int direction;
     private Vector2 frameVelocity;
+    private Animator animator;
+    private string currentAnimation = "";
 
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
     }
 
     private void Update()
     {
+        //Check Movement
         time += Time.deltaTime;
         inputX = Input.GetAxisRaw("Horizontal");
-        if (Input.GetButtonDown("Jump"))
+        if (inputX == 1)
+            direction = 1;
+        else if (inputX == -1)
+            direction = -1;
+
+        //Check for Sprint
+        if (grounded && Input.GetButtonDown("Sprint"))
         {
+            moveSpeed = sprintSpeed;
+            isSprint = true;
+        }
+        else if (Input.GetButtonUp("Sprint"))
+        {
+            moveSpeed = walkSpeed;
+            isSprint = false;
+        }       
+
+        //Check for Jump
+        if (grounded && Input.GetButtonDown("Jump"))
+        {
+            if (direction >= 1)
+                ChangeAnimation("JumpR1_Grapple");
+            else if (direction <= -1)
+                ChangeAnimation("JumpL1_Grapple");
+
             jumpToConsume = true;
             timeJumpWasPressed = time;
         }
+        else
+            CheckAnimation();
+    }
+    public void ChangeAnimation(string animation, float crossfade = 0.15f, float time = 0)
+    {
+        if (time > 0) StartCoroutine(Wait());
+        else Validate();
+
+        IEnumerator Wait()
+        {
+            yield return new WaitForSeconds(time - crossfade);
+            Validate();
+        }
+
+        void Validate()
+        {
+            if(currentAnimation != animation)
+            {
+                currentAnimation = animation;
+
+                if (currentAnimation == "")
+                    CheckAnimation();
+                else
+                    animator.CrossFade(animation, crossfade);
+            }
+        }
+    }
+
+    private void CheckAnimation()
+    {
+        if (currentAnimation == "JumpR1_Grapple" ||
+            currentAnimation == "JumpL1_Grapple")
+            return;
+
+        if(direction == 1)
+        {
+            if (inputX == 0)
+                ChangeAnimation("IdleR_Grapple");
+            else if(inputX > 0)
+            {
+                if (isSprint == true)
+                    ChangeAnimation("SprintR_Grapple");
+                else
+                    ChangeAnimation("WalkR_Grapple");
+            }
+        }else if(direction == -1)
+        {
+            if (inputX == 0)
+                ChangeAnimation("IdleL_Grapple");
+            else if (inputX < 0)
+            {
+                if (isSprint == true)
+                    ChangeAnimation("SprintL_Grapple");
+                else
+                    ChangeAnimation("WalkL_Grapple");
+            }
+        }       
     }
 
     private void FixedUpdate()
@@ -54,7 +146,7 @@ public class PlayerController : MonoBehaviour
         HandleHorizontal();
         HandleGravity();
         ApplyMovement();
-        HandleSpriteFlip();
+        //HandleSpriteFlip();
     }
 
     private void CheckGround()
@@ -86,6 +178,7 @@ public class PlayerController : MonoBehaviour
     private void HandleHorizontal()
     {
         float targetVelocityX = inputX * moveSpeed;
+        print(targetVelocityX);
         if (Mathf.Abs(inputX) > 0.01f)
             frameVelocity.x = Mathf.MoveTowards(frameVelocity.x, targetVelocityX, acceleration * Time.fixedDeltaTime);
         else if (grounded)
@@ -105,11 +198,11 @@ public class PlayerController : MonoBehaviour
         rb.linearVelocity = frameVelocity;
     }
 
-    private void HandleSpriteFlip()
+    /*private void HandleSpriteFlip()
     {
         if (inputX > 0f)
             transform.localScale = new Vector3(1f, 1f, 1f);
         else if (inputX < 0f)
             transform.localScale = new Vector3(-1f, 1f, 1f);
-    }
+    }*/
 }
