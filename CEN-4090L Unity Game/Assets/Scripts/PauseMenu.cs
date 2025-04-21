@@ -10,7 +10,8 @@ public class PauseMenu : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if (isPaused) Resume(); else Pause();
+            if (isPaused) Resume();
+            else           Pause();
         }
     }
 
@@ -34,3 +35,4 @@ public class PauseMenu : MonoBehaviour
         SceneManager.LoadScene("MainMenu");
     }
 }
+
